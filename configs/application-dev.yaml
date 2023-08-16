@@ -1,0 +1,8 @@
+datasource:
+  url: tcp(host:port)
+  username:
+  password:
+  database: pmkit
+  driver-name: mysql
+  max-open-connections:
+  max-idle-connections:
