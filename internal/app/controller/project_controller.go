@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/yourbasic/bit"
 	"pmkit/internal/app/model"
 	"pmkit/internal/app/service"
 	"pmkit/internal/pkg"
@@ -16,8 +17,8 @@ func (pc *ProjectController) RestController() string {
 	return "/v1/project"
 }
 
-func (pc *ProjectController) SaveProject() (string, string, []string, func(*fiber.Ctx) error) {
-	var permissions = make([]string, 0)
+func (pc *ProjectController) SaveProject() (string, string, *bit.Set, func(*fiber.Ctx) error) {
+	var permissions = bit.New()
 	return fiber.MethodPost, "/add", permissions, func(c *fiber.Ctx) error {
 		var project = new(model.Project)
 		err := c.BodyParser(project)
