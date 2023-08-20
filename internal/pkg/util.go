@@ -42,7 +42,7 @@ func GetRunningFuncName() string {
 func GetCurrentUserId(c *fiber.Ctx) int64 {
 	localsUid := c.Locals("uid")
 	if localsUid != nil {
-		return int64(localsUid.(int))
+		return localsUid.(int64)
 	}
 	return 0
 }

@@ -12,7 +12,6 @@ import (
 	"pmkit/internal/app/controller"
 	"pmkit/internal/pkg"
 	"pmkit/internal/pkg/database"
-	"pmkit/internal/pkg/permission"
 	"reflect"
 )
 
@@ -135,15 +134,19 @@ func bootstrap() {
 			return errors.New("未知的请求地址")
 		}
 		// 权限拦截
-		permissions := route.Permissions
-		p := permissions.Contains(permission.Login)
-		if p {
-			uid, err := pkg.SetCurrentUserId(c)
-			if err != nil {
-				return errors.New("非法访问")
-			}
-			// todo 使用 uid 查询用户的权限列表，和当前路由所需权限进行匹配
-			println(uid)
+		//permissions := route.Permissions
+		//p := permissions.Contains(permission.Login)
+		//if p {
+		//	uid, err := pkg.SetCurrentUserId(c)
+		//	if err != nil {
+		//		return errors.New("非法访问")
+		//	}
+		//	// todo 使用 uid 查询用户的权限列表，和当前路由所需权限进行匹配
+		//	println(uid)
+		//}
+		_, err := pkg.SetCurrentUserId(c)
+		if err != nil {
+			return errors.New("非法访问")
 		}
 		return route.Handler(c)
 	})

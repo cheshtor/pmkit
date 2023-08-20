@@ -1,3 +1,5 @@
+server:
+  port: 8080
 datasource:
   url: tcp(host:port)
   username:
@@ -6,3 +8,5 @@ datasource:
   driver-name: mysql
   max-open-connections:
   max-idle-connections:
+app:
+  default-uid: 1690713268944900096

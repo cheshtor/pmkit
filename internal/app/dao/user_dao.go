@@ -2,7 +2,6 @@ package dao
 
 import (
 	"errors"
-	"fmt"
 	"github.com/gofiber/fiber/v2/log"
 	"github.com/jmoiron/sqlx"
 	"pmkit/internal/app/model"
@@ -36,7 +35,7 @@ func (d *UserDao) EditUser(db *sqlx.Tx, user *model.User) (int64, error) {
 		setClause += " `username` = :username,"
 	}
 	if setClause == "SET" {
-		return 0, fmt.Errorf("SQL 构造失败")
+		return 0, errors.New("SQL 构造失败")
 	}
 	before, _ := strings.CutSuffix(setClause, ",")
 	setClause = before
@@ -67,10 +66,7 @@ func (d *UserDao) FindById(id int64) (*model.User, error) {
 	sql := "SELECT `id`, `phone`, `username`, `create_time`, `active` FROM `pk_user` WHERE `id` = ?"
 	log.Debugf("[%s] Execute SQL => %s\n", pkg.GetRunningFuncName(), sql)
 	err := db.Get(user, sql, id)
-	if err != nil {
-		return nil, err
-	}
-	return user, nil
+	return user, err
 }
 
 func (d *UserDao) SearchList(phone string, username string, active interface{}, offset int64, limit int64) ([]*model.User, int64, error) {
