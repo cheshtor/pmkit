@@ -73,6 +73,7 @@ func (d *UserDao) SearchList(phone string, username string, active interface{}, 
 	db := database.GetDBInstance()
 	var users = make([]*model.User, 0)
 	sql := "SELECT `id`, `phone`, `username`, `create_time`, `active` FROM `pk_user`"
+	orderClause := " ORDER BY `id` DESC"
 	limitClause := " LIMIT :offset, :limit"
 	whereClause := ""
 	if len(phone) != 0 {
@@ -88,7 +89,7 @@ func (d *UserDao) SearchList(phone string, username string, active interface{}, 
 		after, _ := strings.CutPrefix(whereClause, " AND")
 		whereClause = " WHERE " + after
 	}
-	sql = sql + whereClause + limitClause
+	sql = sql + whereClause + orderClause + limitClause
 	namedParams := map[string]interface{}{
 		"phone":    phone,
 		"username": username,

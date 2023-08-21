@@ -13,7 +13,7 @@ func ThreadLocalWithUid(ctx *fiber.Ctx) *ThreadLocal {
 	threadLocal := &ThreadLocal{
 		LocalMap: make(map[string]interface{}),
 	}
-	threadLocal.Set("modifiedBy", pkg.GetCurrentUserId(ctx))
+	threadLocal.Set("uid", pkg.GetCurrentUserId(ctx))
 	return threadLocal
 }
 
@@ -27,6 +27,14 @@ func (c *ThreadLocal) Get(name string) interface{} {
 		return value
 	}
 	return nil
+}
+
+func (c *ThreadLocal) GetUid() int64 {
+	value := c.Get("uid")
+	if value != nil {
+		return value.(int64)
+	}
+	return 0
 }
 
 func (c *ThreadLocal) Remove(name string) {

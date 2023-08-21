@@ -33,10 +33,7 @@ func (s *ProjectService) SaveProject(project *model.Project) (*model.Project, er
 }
 
 func (s *ProjectService) EditProject(t *model.ThreadLocal, project *model.Project) (bool, error) {
-	exists, _ := s.GetProjectById(project.Id)
-	if exists == nil {
-		return false, fmt.Errorf("项目不存在。ID：%d", project.Id)
-	}
+	_, _ = s.GetProjectById(project.Id)
 	err := database.Run(func(db *sqlx.Tx) error {
 		project.ModifiedTime = time.Now().UnixMilli()
 		project.ModifiedBy = t.Get("modifiedBy").(int64)
@@ -54,9 +51,6 @@ func (s *ProjectService) EditProject(t *model.ThreadLocal, project *model.Projec
 
 func (s *ProjectService) ChangeProjectStatus(t *model.ThreadLocal, id int64, status model.ProjectStatus) (bool, error) {
 	exists, _ := s.GetProjectById(id)
-	if exists == nil {
-		return false, fmt.Errorf("项目不存在。ID：%d", id)
-	}
 	err := database.Run(func(db *sqlx.Tx) error {
 		params := make(map[string]interface{})
 		params["id"] = id
@@ -84,10 +78,7 @@ func (s *ProjectService) ChangeProjectStatus(t *model.ThreadLocal, id int64, sta
 }
 
 func (s *ProjectService) RemoveProject(t *model.ThreadLocal, id int64) (bool, error) {
-	exists, _ := s.GetProjectById(id)
-	if exists == nil {
-		return false, fmt.Errorf("项目不存在。ID：%d", id)
-	}
+	_, _ = s.GetProjectById(id)
 	err := database.Run(func(db *sqlx.Tx) error {
 		params := make(map[string]interface{})
 		params["id"] = id
@@ -110,12 +101,11 @@ func (s *ProjectService) GetProjectById(id int64) (*model.Project, error) {
 	if err != nil {
 		return nil, fmt.Errorf("项目不存在。ID：%d", id)
 	}
-	return project, err
+	return project, nil
 }
 
 func (s *ProjectService) GetProjectList(condition model.Project, pageNo int64, pageSize int64) (*model.Page, error) {
 	calcedPageNo, offset, calcedPageSize := pkg.ResolvePage(pageNo, pageSize)
-	fmt.Printf("condition.Status.Value() = %d\n", condition.Status.Value())
 	list, count, err := projectDao.SearchList(condition.Name, condition.Employer, condition.Contractor, condition.Supervisor, condition.Executor, condition.StartDate, condition.EndDate, condition.Status.Value(), offset, calcedPageSize)
 	if err != nil {
 		return nil, err

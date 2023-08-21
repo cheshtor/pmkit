@@ -28,31 +28,12 @@ CREATE TABLE `pk_user_role`
     `id`          BIGINT(20) COMMENT '关联 ID',
     `user_id`     BIGINT(20) COMMENT '用户 ID',
     `role_id`     BIGINT(20) COMMENT '角色 ID',
-    `create_by`   BIGINT(20) COMMENT '创建人 ID',
+    `create_by`   BIGINT(20) DEFAULT 0 COMMENT '创建人 ID',
     `create_time` BIGINT(20) DEFAULT 0 COMMENT '创建时间',
     PRIMARY KEY `pk_id` (`id`)
 );
 
 /* 项目 */
-DROP TABLE IF EXISTS `pk_iteration`;
-CREATE TABLE `pk_iteration`
-(
-    `id`            BIGINT(20) COMMENT '迭代 ID',
-    `project_id`    BIGINT(20) COMMENT '项目 ID',
-    `name`          VARCHAR(64) COMMENT '迭代名称',
-    `remark`        VARCHAR(256) COMMENT '迭代备注',
-    `start_date`    DATE COMMENT '迭代开始日期',
-    `end_date`      DATE COMMENT '迭代完成日期',
-    `create_by`     BIGINT(20) COMMENT '创建人 ID',
-    `create_time`   BIGINT(20) DEFAULT 0 COMMENT '创建时间',
-    `modified_by`   BIGINT(20) COMMENT '修改人 ID',
-    `modified_time` BIGINT(20) DEFAULT 0 COMMENT '修改时间',
-    `status`        TINYINT(2) COMMENT '迭代状态。1 - 待建; 2 - 在建; 3 - 暂停; 4 - 终止; 5 - 完成',
-    `delete`        TINYINT(1) DEFAULT 0 COMMENT '删除。0 - 可用; 1 - 删除',
-    PRIMARY KEY `pk_id` (`id`)
-);
-
-/* 迭代 */
 DROP TABLE IF EXISTS `pk_project`;
 CREATE TABLE `pk_project`
 (
@@ -67,10 +48,28 @@ CREATE TABLE `pk_project`
     `end_date`      BIGINT(20) DEFAULT 0 COMMENT '项目完成日期',
     `status`        TINYINT(2) COMMENT '项目状态。1 - 待建; 2 - 在建; 3 - 暂停; 4 - 终止; 5 - 结项',
     `delete`        TINYINT(1) DEFAULT 0 COMMENT '删除。0 - 可用; 1 - 删除',
-    `create_by`     BIGINT(20) COMMENT '创建人 ID',
+    `create_by`     BIGINT(20) DEFAULT 0 COMMENT '创建人 ID',
     `create_time`   BIGINT(20) DEFAULT 0 COMMENT '创建时间',
-    `modified_by`   BIGINT(20) COMMENT '修改人 ID',
+    `modified_by`   BIGINT(20) DEFAULT 0 COMMENT '修改人 ID',
     `modified_time` BIGINT(20) DEFAULT 0 COMMENT '修改时间',
+    PRIMARY KEY `pk_id` (`id`)
+);
+
+/* 迭代 */
+DROP TABLE IF EXISTS `pk_iteration`;
+CREATE TABLE `pk_iteration`
+(
+    `id`            BIGINT(20) COMMENT '迭代 ID',
+    `project_id`    BIGINT(20) COMMENT '项目 ID',
+    `name`          VARCHAR(64) COMMENT '迭代名称',
+    `remark`        VARCHAR(256) COMMENT '迭代备注',
+    `start_date`    BIGINT(20) COMMENT '迭代开始日期',
+    `end_date`      BIGINT(20) COMMENT '迭代完成日期',
+    `create_by`     BIGINT(20) DEFAULT 0 COMMENT '创建人 ID',
+    `create_time`   BIGINT(20) DEFAULT 0 COMMENT '创建时间',
+    `modified_by`   BIGINT(20) DEFAULT 0 COMMENT '修改人 ID',
+    `modified_time` BIGINT(20) DEFAULT 0 COMMENT '修改时间',
+    `delete`        TINYINT(1) DEFAULT 0 COMMENT '删除。0 - 可用; 1 - 删除',
     PRIMARY KEY `pk_id` (`id`)
 );
 
@@ -89,9 +88,9 @@ CREATE TABLE `pk_requirement`
     `influence`     TINYINT(2) COMMENT '影响程度',
     `status`        TINYINT(2) COMMENT '需求状态。1 - 待审核; 2 - 审核中; 3 - 待实施; 4 - 实施中; 5 - 待交付; 6 - 已交付',
     `delete`        TINYINT(1) DEFAULT 0 COMMENT '删除。0 - 可用; 1 - 删除',
-    `create_by`     BIGINT(20) COMMENT '创建人 ID',
+    `create_by`     BIGINT(20) DEFAULT 0 COMMENT '创建人 ID',
     `create_time`   BIGINT(20) DEFAULT 0 COMMENT '创建时间',
-    `modified_by`   BIGINT(20) COMMENT '修改人 ID',
+    `modified_by`   BIGINT(20) DEFAULT 0 COMMENT '修改人 ID',
     `modified_time` BIGINT(20) DEFAULT 0 COMMENT '修改时间',
     PRIMARY KEY `pk_id` (`id`)
 );
@@ -113,7 +112,7 @@ CREATE TABLE `pk_requirement_track`
     `requirement_id` BIGINT(20) COMMENT '需求 ID',
     `status`         TINYINT(2) COMMENT '需求状态',
     `parent_id`      BIGINT(20) COMMENT '父追踪记录 ID',
-    `create_by`      BIGINT(20) COMMENT '创建人 ID',
+    `create_by`      BIGINT(20) DEFAULT 0 COMMENT '创建人 ID',
     `create_time`    BIGINT(20) DEFAULT 0 COMMENT '创建时间',
     PRIMARY KEY `pk_id` (`id`)
 );
@@ -126,8 +125,8 @@ CREATE TABLE `pk_requirement_comment`
     `requirement_id` BIGINT(20) COMMENT '需求 ID',
     `comment`        VARCHAR(512) COMMENT '评论内容',
     `parent_id`      BIGINT(20) COMMENT '父评论 ID',
-    `delete`        TINYINT(1) DEFAULT 0 COMMENT '删除。0 - 可用; 1 - 删除',
-    `create_by`      BIGINT(20) COMMENT '创建人 ID',
+    `delete`         TINYINT(1) DEFAULT 0 COMMENT '删除。0 - 可用; 1 - 删除',
+    `create_by`      BIGINT(20) DEFAULT 0 COMMENT '创建人 ID',
     `create_time`    BIGINT(20) DEFAULT 0 COMMENT '创建时间',
     PRIMARY KEY `pk_id` (`id`)
 );

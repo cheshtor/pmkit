@@ -123,6 +123,7 @@ func bootstrap() {
 	controllers := []controller.Controller{
 		&controller.UserController{},
 		&controller.ProjectController{},
+		&controller.IterationController{},
 	}
 	setupRoutes(commonPrefix, controllers)
 

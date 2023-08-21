@@ -35,10 +35,7 @@ func (s *UserService) SaveUser(user *model.User) (bool, error) {
 }
 
 func (s *UserService) EditUser(user *model.User) (bool, error) {
-	exist, _ := s.GetUserById(user.Id)
-	if exist == nil {
-		return false, fmt.Errorf("用户不存在。ID：%d", user.Id)
-	}
+	_, _ = s.GetUserById(user.Id)
 	err := database.Run(func(db *sqlx.Tx) error {
 		if user.Password != "" {
 			user.Password = pkg.GenMd5(user.Password)
@@ -57,9 +54,6 @@ func (s *UserService) EditUser(user *model.User) (bool, error) {
 
 func (s *UserService) ActiveSwitch(id int64, active bool) (bool, error) {
 	exists, _ := s.GetUserById(id)
-	if exists == nil {
-		return false, fmt.Errorf("用户不存在。ID：%d", id)
-	}
 	if exists.Active == active {
 		return true, nil
 	}
@@ -81,7 +75,11 @@ func (s *UserService) ActiveSwitch(id int64, active bool) (bool, error) {
 }
 
 func (s *UserService) GetUserById(id int64) (*model.User, error) {
-	return userDao.FindById(id)
+	user, err := userDao.FindById(id)
+	if err != nil {
+		return nil, fmt.Errorf("用户不存在。ID：%d", id)
+	}
+	return user, nil
 }
 
 func (s *UserService) GetUserList(condition model.User, pageNo int64, pageSize int64) (*model.Page, error) {

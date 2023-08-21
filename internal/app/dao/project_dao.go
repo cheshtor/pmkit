@@ -101,6 +101,7 @@ func (d *ProjectDao) SearchList(name, employer, contractor, supervisor, executor
 	db := database.GetDBInstance()
 	var projects = make([]*model.Project, 0)
 	sql := "SELECT `id`, `name`, `employer`, `contractor`, `supervisor`, `executor`, `description`, `start_date`, `end_date`, `status`, `delete`, `create_by`, `create_time`, `modified_by`, `modified_time` FROM `pk_project`"
+	orderClause := " ORDER BY `id` DESC"
 	limitClause := " LIMIT :offset, :limit"
 	whereClause := ""
 	if len(name) != 0 {
@@ -131,7 +132,7 @@ func (d *ProjectDao) SearchList(name, employer, contractor, supervisor, executor
 		after, _ := strings.CutPrefix(whereClause, " AND")
 		whereClause = " WHERE " + after
 	}
-	sql = sql + whereClause + limitClause
+	sql = sql + whereClause + orderClause + limitClause
 	namedParams := map[string]interface{}{
 		"name":       name,
 		"employer":   employer,
