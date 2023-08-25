@@ -113,7 +113,6 @@ CREATE TABLE `pk_requirement_track`
     `id`             BIGINT(20) COMMENT '主键 ID',
     `requirement_id` BIGINT(20) COMMENT '需求 ID',
     `status`         TINYINT(2) COMMENT '需求状态',
-    `parent_id`      BIGINT(20) COMMENT '父追踪记录 ID',
     `create_by`      BIGINT(20) DEFAULT 0 COMMENT '创建人 ID',
     `create_time`    BIGINT(20) DEFAULT 0 COMMENT '创建时间',
     PRIMARY KEY `pk_id` (`id`)
@@ -126,7 +125,6 @@ CREATE TABLE `pk_requirement_comment`
     `id`             BIGINT(20) COMMENT '需求评论 ID',
     `requirement_id` BIGINT(20) COMMENT '需求 ID',
     `comment`        VARCHAR(512) COMMENT '评论内容',
-    `parent_id`      BIGINT(20) COMMENT '父评论 ID',
     `delete`         TINYINT(1) DEFAULT 0 COMMENT '删除。0 - 可用; 1 - 删除',
     `create_by`      BIGINT(20) DEFAULT 0 COMMENT '创建人 ID',
     `create_time`    BIGINT(20) DEFAULT 0 COMMENT '创建时间',

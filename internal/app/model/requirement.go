@@ -92,6 +92,30 @@ func (rs RequirementStatus) Value() int {
 	}
 }
 
+// TransferTo 需求状态转换校验
+func (rs RequirementStatus) TransferTo(targetStatus RequirementStatus) bool {
+	currentValue := rs.Value()
+	targetValue := targetStatus.Value()
+	// 目标状态编码必须在有效范围内
+	if targetValue < 1 || targetValue > Delivery.Value() {
+		return false
+	}
+	// 无转换
+	if targetValue == currentValue {
+		return true
+	}
+	// 目标状态编码小于当前状态编码，只有当前状态是 Verify 和 Checking 时允许
+	if targetValue < currentValue && (currentValue != Verify.Value() || currentValue != Checking.Value()) {
+		return false
+	}
+	// 状态之间严格递进，不允许跨越
+	if targetValue-currentValue != 1 {
+		return false
+	}
+	return true
+}
+
+// Requirement 需求
 type Requirement struct {
 	BaseModel
 	ProjectId   int64                `db:"project_id" json:"projectId"`
@@ -108,7 +132,28 @@ type Requirement struct {
 	Delete      bool                 `db:"delete" json:"delete"`
 }
 
+// RequirementContent 需求详情
 type RequirementContent struct {
 	RequirementId int64  `db:"requirement_id" json:"requirementId"`
 	Content       string `db:"content" json:"content"`
+}
+
+// RequirementTrack 需求状态追踪记录
+type RequirementTrack struct {
+	Id            int64             `db:"id" json:"id"`
+	RequirementId int64             `db:"requirement_id" json:"requirementId"`
+	Status        RequirementStatus `db:"status" json:"status"`
+	ParentId      int64             `db:"parent_id" json:"parentId"`
+	CreateBy      int64             `db:"create_by" json:"createBy"`
+	CreateTime    int64             `db:"create_time" json:"createTime"`
+}
+
+// RequirementComment 需求评论
+type RequirementComment struct {
+	Id            int64  `db:"id" json:"id"`
+	RequirementId int64  `db:"requirement_id" json:"requirementId"`
+	Comment       string `db:"comment" json:"comment"`
+	Delete        bool   `db:"delete" json:"delete"`
+	CreateBy      int64  `db:"create_by" json:"createBy"`
+	CreateTime    int64  `db:"create_time" json:"createTime"`
 }

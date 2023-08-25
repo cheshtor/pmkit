@@ -70,7 +70,7 @@ func (d *ProjectDao) EditProject(db *sqlx.Tx, project *model.Project) (int64, er
 }
 
 func (d *ProjectDao) EditStatus(db *sqlx.Tx, params map[string]interface{}) (int64, error) {
-	sql := "UPDATE `pk_project` SET `status` = :status, `start_date` = :start_date, `end_date` = :end_date, `modified_time` = :modified_time WHERE `id` = :id AND `delete` = 0"
+	sql := "UPDATE `pk_project` SET `status` = :status, `start_date` = :start_date, `end_date` = :end_date, `modified_time` = :modified_time, `modified_by` = :modified_by WHERE `id` = :id AND `delete` = 0"
 	log.Debugf("[%s] Execute SQL => %s\n", pkg.GetRunningFuncName(), sql)
 	result, err := db.NamedExec(sql, params)
 	if err != nil {
@@ -101,7 +101,7 @@ func (d *ProjectDao) SearchList(name, employer, contractor, supervisor, executor
 	db := database.GetDBInstance()
 	var projects = make([]*model.Project, 0)
 	sql := "SELECT `id`, `name`, `employer`, `contractor`, `supervisor`, `executor`, `description`, `start_date`, `end_date`, `status`, `delete`, `create_by`, `create_time`, `modified_by`, `modified_time` FROM `pk_project`"
-	orderClause := " ORDER BY `id` DESC"
+	orderClause := " ORDER BY `create_time` DESC"
 	limitClause := " LIMIT :offset, :limit"
 	whereClause := ""
 	if len(name) != 0 {
@@ -152,9 +152,9 @@ func (d *ProjectDao) SearchList(name, employer, contractor, supervisor, executor
 		return nil, 0, err
 	}
 	for rows.Next() {
-		u := &model.Project{}
-		_ = rows.StructScan(u)
-		projects = append(projects, u)
+		p := &model.Project{}
+		_ = rows.StructScan(p)
+		projects = append(projects, p)
 	}
 	countSql := "SELECT COUNT(1) FROM `pk_project`" + whereClause
 	log.Debugf("[%s] Execute SQL => %s\n", funcName, countSql)
