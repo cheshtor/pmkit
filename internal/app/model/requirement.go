@@ -132,10 +132,71 @@ type Requirement struct {
 	Delete      bool                 `db:"delete" json:"delete"`
 }
 
-// RequirementContent 需求详情
+// RequirementContent 需求描述
 type RequirementContent struct {
 	RequirementId int64  `db:"requirement_id" json:"requirementId"`
 	Content       string `db:"content" json:"content"`
+}
+
+// WholeRequirement 包含需求基本信息和需求描述详情的实体
+type WholeRequirement struct {
+	*Requirement
+	*RequirementContent
+}
+
+func (wr *WholeRequirement) SeparateRequirement() *Requirement {
+	r := new(Requirement)
+	r.Id = wr.Id
+	r.ProjectId = wr.ProjectId
+	r.IterationId = wr.IterationId
+	r.Code = wr.Code
+	r.Name = wr.Name
+	r.Type = wr.Type
+	r.Demander = wr.Demander
+	r.Priority = wr.Priority
+	r.Influence = wr.Influence
+	r.Owner = wr.Owner
+	r.Tracer = wr.Tracer
+	r.Status = wr.Status
+	r.Delete = wr.Delete
+	r.CreateTime = wr.CreateTime
+	r.CreateBy = wr.CreateBy
+	r.ModifiedTime = wr.ModifiedTime
+	r.ModifiedBy = wr.ModifiedBy
+	return r
+}
+
+func (wr *WholeRequirement) SeparateContent() *RequirementContent {
+	c := new(RequirementContent)
+	c.RequirementId = wr.Id
+	c.Content = wr.Content
+	return c
+}
+
+func (wr *WholeRequirement) Merge(requirement *Requirement, content *RequirementContent) {
+	if requirement == nil {
+		wr.Id = requirement.Id
+		wr.ProjectId = requirement.ProjectId
+		wr.IterationId = requirement.IterationId
+		wr.Code = requirement.Code
+		wr.Name = requirement.Name
+		wr.Type = requirement.Type
+		wr.Demander = requirement.Demander
+		wr.Priority = requirement.Priority
+		wr.Influence = requirement.Influence
+		wr.Owner = requirement.Owner
+		wr.Tracer = requirement.Tracer
+		wr.Status = requirement.Status
+		wr.Delete = requirement.Delete
+		wr.CreateTime = requirement.CreateTime
+		wr.CreateBy = requirement.CreateBy
+		wr.ModifiedTime = requirement.ModifiedTime
+		wr.ModifiedBy = requirement.ModifiedBy
+	}
+	if content != nil {
+		wr.RequirementId = requirement.Id
+		wr.Content = content.Content
+	}
 }
 
 // RequirementTrack 需求状态追踪记录
@@ -143,7 +204,6 @@ type RequirementTrack struct {
 	Id            int64             `db:"id" json:"id"`
 	RequirementId int64             `db:"requirement_id" json:"requirementId"`
 	Status        RequirementStatus `db:"status" json:"status"`
-	ParentId      int64             `db:"parent_id" json:"parentId"`
 	CreateBy      int64             `db:"create_by" json:"createBy"`
 	CreateTime    int64             `db:"create_time" json:"createTime"`
 }

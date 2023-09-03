@@ -36,7 +36,7 @@ func (s *ProjectService) EditProject(t *model.ThreadLocal, project *model.Projec
 	_, _ = s.GetProjectById(project.Id)
 	err := database.Run(func(db *sqlx.Tx) error {
 		project.ModifiedTime = time.Now().UnixMilli()
-		project.ModifiedBy = t.Get("modifiedBy").(int64)
+		project.ModifiedBy = t.GetUid()
 		affectedRows, err := projectDao.EditProject(db, project)
 		if err != nil {
 			return err
@@ -64,7 +64,7 @@ func (s *ProjectService) ChangeProjectStatus(t *model.ThreadLocal, id int64, sta
 			params["end_date"] = t.Get("timestamp").(int64)
 		}
 		params["modified_time"] = time.Now().UnixMilli()
-		params["modified_by"] = t.Get("modifiedBy").(int64)
+		params["modified_by"] = t.GetUid()
 		affectedRows, err := projectDao.EditStatus(db, params)
 		if err != nil {
 			return err
@@ -83,7 +83,7 @@ func (s *ProjectService) RemoveProject(t *model.ThreadLocal, id int64) (bool, er
 		params := make(map[string]interface{})
 		params["id"] = id
 		params["modified_time"] = time.Now().UnixMilli()
-		params["modified_by"] = t.Get("modifiedBy").(int64)
+		params["modified_by"] = t.GetUid()
 		affectedRows, err := projectDao.RemoveProject(db, params)
 		if err != nil {
 			return err
@@ -104,7 +104,7 @@ func (s *ProjectService) GetProjectById(id int64) (*model.Project, error) {
 	return project, nil
 }
 
-func (s *ProjectService) GetProjectList(condition model.Project, pageNo int64, pageSize int64) (*model.Page, error) {
+func (s *ProjectService) GetProjectList(condition *model.Project, pageNo int64, pageSize int64) (*model.Page, error) {
 	calcedPageNo, offset, calcedPageSize := pkg.ResolvePage(pageNo, pageSize)
 	list, count, err := projectDao.SearchList(condition.Name, condition.Employer, condition.Contractor, condition.Supervisor, condition.Executor, condition.StartDate, condition.EndDate, condition.Status.Value(), offset, calcedPageSize)
 	if err != nil {

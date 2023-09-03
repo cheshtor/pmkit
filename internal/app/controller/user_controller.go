@@ -60,7 +60,7 @@ func (uc *UserController) ListUser() (string, string, *bit.Set, func(*fiber.Ctx)
 		if err != nil {
 			return err
 		}
-		list, err := userService.GetUserList(condition, pageNo, pageSize)
+		list, err := userService.GetUserList(&condition, pageNo, pageSize)
 		if err != nil {
 			return err
 		}

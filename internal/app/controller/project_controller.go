@@ -44,7 +44,7 @@ func (pc *ProjectController) ListProject() (string, string, *bit.Set, func(*fibe
 		if err != nil {
 			return err
 		}
-		list, err := projectService.GetProjectList(condition, pageNo, pageSize)
+		list, err := projectService.GetProjectList(&condition, pageNo, pageSize)
 		if err != nil {
 			return err
 		}

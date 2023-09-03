@@ -93,6 +93,7 @@ func (d *ProjectDao) FindById(id int64) (*model.Project, error) {
 	db := database.GetDBInstance()
 	project := &model.Project{}
 	sql := "SELECT `id`, `name`, `employer`, `contractor`, `supervisor`, `executor`, `description`, `start_date`, `end_date`, `status`, `delete`, `create_by`, `create_time`, `modified_by`, `modified_time` FROM `pk_project` WHERE `id` = ? AND `delete` = 0"
+	log.Debugf("[%s] Execute SQL => %s\n", pkg.GetRunningFuncName(), sql)
 	err := db.Get(project, sql, id)
 	return project, err
 }

@@ -82,7 +82,7 @@ func (s *UserService) GetUserById(id int64) (*model.User, error) {
 	return user, nil
 }
 
-func (s *UserService) GetUserList(condition model.User, pageNo int64, pageSize int64) (*model.Page, error) {
+func (s *UserService) GetUserList(condition *model.User, pageNo int64, pageSize int64) (*model.Page, error) {
 	calcedPageNo, offset, calcedPageSize := pkg.ResolvePage(pageNo, pageSize)
 	list, count, err := userDao.SearchList(condition.Phone, condition.Username, condition.Active, offset, calcedPageSize)
 	if err != nil {
